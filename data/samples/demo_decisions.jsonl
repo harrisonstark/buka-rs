@@ -1,112 +1,36 @@
-{"state": "server is down, can you look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "deploy failed asap, are you around?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "bug in prod, who is on call tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "the build is red, can you check?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "logs are screaming, look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "can you check the logs tomorrow?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "deploy window tomorrow, you free?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "restart the worker tomorrow?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "deploy looks fine now", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "server recovered, all quiet", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "ci is green", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "reading about attention tonight, does this make sense?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "stuck on the mask, can you look tonight?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "loss is nan, help asap?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "notebook 4 tomorrow?", "topic": "learning", "urgency": 1, "needs_reply": true}
-{"state": "can we review the block tomorrow?", "topic": "learning", "urgency": 1, "needs_reply": true}
-{"state": "i will read the notes tomorrow", "topic": "learning", "urgency": 1, "needs_reply": false}
-{"state": "finished the attention exercise", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "the residual makes sense now", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "softmax is just a weighted average", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "lol fair", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "coffee first", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "hey", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "big mood", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "you around tomorrow?", "topic": "chat", "urgency": 1, "needs_reply": true}
-{"state": "want to call tomorrow?", "topic": "chat", "urgency": 1, "needs_reply": true}
-{"state": "can you talk tonight?", "topic": "chat", "urgency": 2, "needs_reply": true}
-{"state": "hello??", "topic": "chat", "urgency": 2, "needs_reply": true}
-{"state": "server is down, can you look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "deploy failed asap, are you around?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "bug in prod, who is on call tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "the build is red, can you check?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "logs are screaming, look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "can you check the logs tomorrow?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "deploy window tomorrow, you free?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "restart the worker tomorrow?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "deploy looks fine now", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "server recovered, all quiet", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "ci is green", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "reading about attention tonight, does this make sense?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "stuck on the mask, can you look tonight?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "loss is nan, help asap?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "notebook 4 tomorrow?", "topic": "learning", "urgency": 1, "needs_reply": true}
-{"state": "can we review the block tomorrow?", "topic": "learning", "urgency": 1, "needs_reply": true}
-{"state": "i will read the notes tomorrow", "topic": "learning", "urgency": 1, "needs_reply": false}
-{"state": "finished the attention exercise", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "the residual makes sense now", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "softmax is just a weighted average", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "lol fair", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "coffee first", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "hey", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "big mood", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "you around tomorrow?", "topic": "chat", "urgency": 1, "needs_reply": true}
-{"state": "want to call tomorrow?", "topic": "chat", "urgency": 1, "needs_reply": true}
-{"state": "can you talk tonight?", "topic": "chat", "urgency": 2, "needs_reply": true}
-{"state": "hello??", "topic": "chat", "urgency": 2, "needs_reply": true}
-{"state": "server is down, can you look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "deploy failed asap, are you around?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "bug in prod, who is on call tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "the build is red, can you check?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "logs are screaming, look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "can you check the logs tomorrow?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "deploy window tomorrow, you free?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "restart the worker tomorrow?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "deploy looks fine now", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "server recovered, all quiet", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "ci is green", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "reading about attention tonight, does this make sense?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "stuck on the mask, can you look tonight?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "loss is nan, help asap?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "notebook 4 tomorrow?", "topic": "learning", "urgency": 1, "needs_reply": true}
-{"state": "can we review the block tomorrow?", "topic": "learning", "urgency": 1, "needs_reply": true}
-{"state": "i will read the notes tomorrow", "topic": "learning", "urgency": 1, "needs_reply": false}
-{"state": "finished the attention exercise", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "the residual makes sense now", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "softmax is just a weighted average", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "lol fair", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "coffee first", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "hey", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "big mood", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "you around tomorrow?", "topic": "chat", "urgency": 1, "needs_reply": true}
-{"state": "want to call tomorrow?", "topic": "chat", "urgency": 1, "needs_reply": true}
-{"state": "can you talk tonight?", "topic": "chat", "urgency": 2, "needs_reply": true}
-{"state": "hello??", "topic": "chat", "urgency": 2, "needs_reply": true}
-{"state": "server is down, can you look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "deploy failed asap, are you around?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "bug in prod, who is on call tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "the build is red, can you check?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "logs are screaming, look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
-{"state": "can you check the logs tomorrow?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "deploy window tomorrow, you free?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "restart the worker tomorrow?", "topic": "ops", "urgency": 1, "needs_reply": true}
-{"state": "deploy looks fine now", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "server recovered, all quiet", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "ci is green", "topic": "ops", "urgency": 0, "needs_reply": false}
-{"state": "reading about attention tonight, does this make sense?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "stuck on the mask, can you look tonight?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "loss is nan, help asap?", "topic": "learning", "urgency": 2, "needs_reply": true}
-{"state": "notebook 4 tomorrow?", "topic": "learning", "urgency": 1, "needs_reply": true}
-{"state": "can we review the block tomorrow?", "topic": "learning", "urgency": 1, "needs_reply": true}
-{"state": "i will read the notes tomorrow", "topic": "learning", "urgency": 1, "needs_reply": false}
-{"state": "finished the attention exercise", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "the residual makes sense now", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "softmax is just a weighted average", "topic": "learning", "urgency": 0, "needs_reply": false}
-{"state": "lol fair", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "coffee first", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "hey", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "big mood", "topic": "chat", "urgency": 0, "needs_reply": false}
-{"state": "you around tomorrow?", "topic": "chat", "urgency": 1, "needs_reply": true}
-{"state": "want to call tomorrow?", "topic": "chat", "urgency": 1, "needs_reply": true}
-{"state": "can you talk tonight?", "topic": "chat", "urgency": 2, "needs_reply": true}
-{"state": "hello??", "topic": "chat", "urgency": 2, "needs_reply": true}
+{"state": "pager is open, confirm you are taking it", "topic": "ops", "urgency": 2, "needs_reply": true}
+{"state": "rollback is waiting on your yes before I touch prod", "topic": "ops", "urgency": 2, "needs_reply": true}
+{"state": "error budget is gone, need you on the bridge", "topic": "ops", "urgency": 2, "needs_reply": true}
+{"state": "can you join the incident call", "topic": "ops", "urgency": 2, "needs_reply": true}
+{"state": "migration window is tomorrow afternoon, ack if you can drive it", "topic": "ops", "urgency": 1, "needs_reply": true}
+{"state": "please review the deploy plan before lunch", "topic": "ops", "urgency": 1, "needs_reply": true}
+{"state": "staging restart can wait until you are free after standup", "topic": "ops", "urgency": 1, "needs_reply": true}
+{"state": "is the sky falling? no, the deploy finished clean", "topic": "ops", "urgency": 0, "needs_reply": false}
+{"state": "who broke prod? nobody, the graph is flat", "topic": "ops", "urgency": 0, "needs_reply": false}
+{"state": "workers are healthy and the queue is empty", "topic": "ops", "urgency": 0, "needs_reply": false}
+{"state": "ci stayed green through the night, nothing for you", "topic": "ops", "urgency": 0, "needs_reply": false}
+{"state": "disk is fine, I already cleared the old logs", "topic": "ops", "urgency": 0, "needs_reply": false}
+{"state": "stuck, the pool divides by the pad count, look when you can", "topic": "learning", "urgency": 2, "needs_reply": true}
+{"state": "loss exploded after step 40, I need a second pair of eyes", "topic": "learning", "urgency": 2, "needs_reply": true}
+{"state": "the mask is hiding real tokens, can you trace it with me", "topic": "learning", "urgency": 2, "needs_reply": true}
+{"state": "can we walk through SwiGLU after lunch", "topic": "learning", "urgency": 1, "needs_reply": true}
+{"state": "leave a note if the temperature grid looks wrong", "topic": "learning", "urgency": 1, "needs_reply": true}
+{"state": "I will reread the attention chapter this evening", "topic": "learning", "urgency": 1, "needs_reply": false}
+{"state": "does the mask even matter? I already fixed the shapes", "topic": "learning", "urgency": 0, "needs_reply": false}
+{"state": "finished the temperature grid, notes are in the notebook", "topic": "learning", "urgency": 0, "needs_reply": false}
+{"state": "softmax is just a weighted average, moving on", "topic": "learning", "urgency": 0, "needs_reply": false}
+{"state": "the residual finally clicked, no follow-up", "topic": "learning", "urgency": 0, "needs_reply": false}
+{"state": "you around? the lab group is leaving", "topic": "chat", "urgency": 2, "needs_reply": true}
+{"state": "call me if you are still on campus", "topic": "chat", "urgency": 2, "needs_reply": true}
+{"state": "need a ride home, text back", "topic": "chat", "urgency": 2, "needs_reply": true}
+{"state": "want ramen after the lab", "topic": "chat", "urgency": 1, "needs_reply": true}
+{"state": "bring coffee if you are coming by", "topic": "chat", "urgency": 1, "needs_reply": true}
+{"state": "save me a seat at the talk, only if you remember", "topic": "chat", "urgency": 1, "needs_reply": true}
+{"state": "movie was fine, no spoilers needed", "topic": "chat", "urgency": 0, "needs_reply": false}
+{"state": "lol anyway the joke landed", "topic": "chat", "urgency": 0, "needs_reply": false}
+{"state": "coffee is already on, come whenever", "topic": "chat", "urgency": 0, "needs_reply": false}
+{"state": "why do we even have a group chat? I already left", "topic": "chat", "urgency": 0, "needs_reply": false}
+{"state": "heading out, lock the lab if you are last", "topic": "chat", "urgency": 1, "needs_reply": false}
+{"state": "the build is red and I am blocked until you say ship or revert", "topic": "ops", "urgency": 2, "needs_reply": true}
+{"state": "can the dashboard wait? I already filed the ticket", "topic": "ops", "urgency": 0, "needs_reply": false}
+{"state": "notebook 4 is done, the asserts passed", "topic": "learning", "urgency": 0, "needs_reply": false}

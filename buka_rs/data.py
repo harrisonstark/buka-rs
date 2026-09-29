@@ -45,6 +45,21 @@ def encode_state(text: str, max_len: int, pad_id: int = 256) -> tuple[list[int],
     return ids + [pad_id] * pad, [1.0] * width + [0.0] * pad
 
 
+def parse_urgency(value: object) -> int:
+    """Integer level only. `1.9` is a mistake, not a silent 1."""
+    if isinstance(value, bool):
+        raise ValueError(f"urgency must be an int, got {value!r}")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        if not value.is_integer():
+            raise ValueError(f"urgency must be an int, got {value!r}")
+        return int(value)
+    if isinstance(value, str) and value.strip().lstrip("-").isdigit():
+        return int(value.strip())
+    raise ValueError(f"urgency must be an int, got {value!r}")
+
+
 def parse_bool(value: object) -> bool:
     if isinstance(value, bool):
         return value
@@ -61,27 +76,40 @@ def parse_bool(value: object) -> bool:
 
 def load_examples(path: str | Path, topics: tuple[str, ...], n_urgency: int) -> list[Example]:
     rows: list[Example] = []
+    seen: dict[str, tuple[str, int, bool]] = {}
     # utf-8-sig drops a Notepad BOM so the first line still parses.
     for lineno, line in enumerate(Path(path).read_text(encoding="utf-8-sig").splitlines(), start=1):
         line = line.strip()
         if not line:
             continue
         raw = json.loads(line)
-        state = clean_state(str(raw.get("state", "")))
+        raw_state = raw.get("state", "")
+        if raw_state is None:
+            continue
+        state = clean_state(str(raw_state))
         if state is None:
             continue
         topic = str(raw["topic"])
-        urgency = int(raw["urgency"])
+        try:
+            urgency = parse_urgency(raw["urgency"])
+        except ValueError as exc:
+            raise ValueError(f"{path}:{lineno}: {exc}") from exc
         if topic not in topics:
             raise ValueError(f"{path}:{lineno}: topic {topic!r} not in {topics}")
         if not 0 <= urgency < n_urgency:
             raise ValueError(f"{path}:{lineno}: urgency {urgency} out of range")
+        needs_reply = parse_bool(raw["needs_reply"])
+        signature = (topic, urgency, needs_reply)
+        previous = seen.get(state)
+        if previous is not None and previous != signature:
+            raise ValueError(f"{path}:{lineno}: conflicting labels for the same state")
+        seen[state] = signature
         rows.append(
             Example(
                 state=state,
                 topic=topic,
                 urgency=urgency,
-                needs_reply=parse_bool(raw["needs_reply"]),
+                needs_reply=needs_reply,
             )
         )
     if not rows:

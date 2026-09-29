@@ -27,6 +27,7 @@ def train_step(model: OneModel, batch: dict[str, Tensor], optimizer: torch.optim
     optimizer.zero_grad(set_to_none=True)
     loss = decision_loss(model(batch["input_ids"], batch["mask"]), batch)
     loss.backward()
+    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
     optimizer.step()
     return float(loss.detach())
 
@@ -37,8 +38,12 @@ def evaluate(
     examples: list[Example],
     seq_len: int,
     device: torch.device,
+    temperatures: dict[str, float] | None = None,
 ) -> dict[str, float]:
     model.eval()
+    urgency_t = 1.0
+    if temperatures:
+        urgency_t = max(float(temperatures.get("urgency", 1.0)), 1e-3)
     topic_hit = 0
     reply_hit = 0
     urgency_abs = 0.0
@@ -50,7 +55,7 @@ def evaluate(
         topic_hit += int((out.topic.argmax(dim=-1) == batch["topic"]).sum().item())
         reply_pred = (torch.sigmoid(out.reply) >= 0.5).to(batch["reply"].dtype)
         reply_hit += int((reply_pred == batch["reply"]).sum().item())
-        probs = torch.softmax(out.urgency.float(), dim=-1)
+        probs = torch.softmax(out.urgency.float() / urgency_t, dim=-1)
         levels = torch.arange(probs.size(-1), device=device, dtype=probs.dtype)
         expected = (probs * levels).sum(dim=-1)
         urgency_abs += float((expected - batch["urgency"].float()).abs().sum().item())
@@ -154,7 +159,7 @@ def save_checkpoint(
 def load_checkpoint(
     path: str | Path, device: torch.device
 ) -> tuple[OneModel, dict[str, float], int]:
-    blob = torch.load(path, map_location=device, weights_only=False)
+    blob = torch.load(path, map_location=device, weights_only=True)
     config = OneConfig.from_dict(blob["config"])
     model = OneModel(config).to(device)
     model.load_state_dict(blob["state_dict"])

@@ -5,7 +5,6 @@ description = "Small System One model from scratch — calibrated decisions, not
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-  "numpy",
   "pyyaml",
   "fastapi",
   "uvicorn[standard]",

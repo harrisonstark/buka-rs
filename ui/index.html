@@ -78,7 +78,7 @@
     <p>a state in, three decisions out</p>
   </header>
   <main>
-    <textarea id="state" placeholder="paste a message…">server is down, can you look tonight?</textarea>
+    <textarea id="state" placeholder="paste a message…">pager is open, confirm you are taking it</textarea>
     <button id="go" type="button">decide</button>
     <div id="status"></div>
     <div id="out"></div>
@@ -87,18 +87,28 @@
     const statusEl = document.getElementById("status");
     const out = document.getElementById("out");
 
+    function esc(value) {
+      return String(value).replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[ch]);
+    }
+
     function bars(pairs) {
       return pairs.map(([name, p]) => {
         const pct = Math.max(0, Math.min(100, p * 100));
-        return '<div class="bar"><span style="width:6.5rem">' + name +
+        return '<div class="bar"><span style="width:6.5rem">' + esc(name) +
           '</span><div class="track"><div class="fill" style="width:' + pct.toFixed(1) +
-          '%"></div></div><span>' + p.toFixed(2) + "</span></div>";
+          '%"></div></div><span>' + Number(p).toFixed(2) + "</span></div>";
       }).join("");
     }
 
     function card(title, value, body) {
-      return '<section class="card"><h2>' + title + '</h2><p class="value">' +
-        value + "</p>" + body + "</section>";
+      return '<section class="card"><h2>' + esc(title) + '</h2><p class="value">' +
+        esc(value) + "</p>" + body + "</section>";
     }
 
     async function health() {
@@ -132,7 +142,7 @@
         const levelBars = bars(urgency.legend.map((name, i) => [name, urgency.probabilities[String(i)]]));
         out.innerHTML =
           card("choice · topic", topic.choice + " · confidence " + topic.confidence.toFixed(2), topicBars) +
-          card("score · urgency", urgency.score.toFixed(2), levelBars) +
+          card("score · urgency", urgency.score.toFixed(2) + " · confidence " + urgency.confidence.toFixed(2), levelBars) +
           card("noul · needs a reply", reply.noul.toFixed(2), "");
       } catch (err) {
         statusEl.textContent = err.message;

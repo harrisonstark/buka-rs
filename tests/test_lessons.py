@@ -71,11 +71,82 @@ def test_norm_swiglu_pool():
     assert torch.allclose(pooled, torch.tensor([[2.0, 2.0]]))
 
 
-def test_temperature_search_returns_a_grid_value():
-    logits = torch.tensor([[5.0, 0.0], [0.1, 0.1]])
-    labels = torch.tensor([0, 1])
+def test_temperature_search_softens_a_confident_wrong_row():
+    # Row 0 is confidently wrong. Sharpening (T=0.5) raises NLL. T=2 wins.
+    logits = torch.tensor([[8.0, 0.0], [0.3, 0.0]])
+    labels = torch.tensor([1, 0])
     chosen = fit_temperature(logits, labels, grid=[0.5, 1.0, 2.0])
-    assert chosen == 0.5
+    assert chosen == 2.0
+    assert fit_temperature(torch.empty(0, 2), torch.empty(0, dtype=torch.long)) == 1.0
+
+
+def test_loader_rejects_bad_rows(tmp_path):
+    from buka_rs.data import Example
+
+    path = tmp_path / "rows.jsonl"
+    path.write_text(
+        '{"state": null, "topic": "chat", "urgency": 0, "needs_reply": false}\n'
+        '{"state": "kept", "topic": "chat", "urgency": 0, "needs_reply": false}\n',
+        encoding="utf-8",
+    )
+    rows = load_examples(path, ("chat", "ops", "learning"), 3)
+    assert [row.state for row in rows] == ["kept"]
+    path.write_text(
+        '{"state": "x", "topic": "chat", "urgency": 1.9, "needs_reply": false}\n',
+        encoding="utf-8",
+    )
+    try:
+        load_examples(path, ("chat", "ops", "learning"), 3)
+        raise AssertionError("1.9 should fail")
+    except ValueError as exc:
+        assert "urgency" in str(exc)
+    path.write_text(
+        '{"state": "same", "topic": "chat", "urgency": 0, "needs_reply": false}\n'
+        '{"state": "same", "topic": "ops", "urgency": 2, "needs_reply": true}\n',
+        encoding="utf-8",
+    )
+    try:
+        load_examples(path, ("chat", "ops", "learning"), 3)
+        raise AssertionError("conflict should fail")
+    except ValueError as exc:
+        assert "conflicting" in str(exc)
+    assert Example is not None
+
+
+def test_sample_reply_is_not_the_question_mark():
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[1] / "data" / "samples" / "demo_decisions.jsonl"
+    rows = load_examples(path, ("chat", "ops", "learning"), 3)
+    questions = [row for row in rows if "?" in row.state]
+    statements = [row for row in rows if "?" not in row.state]
+    assert questions and any(not row.needs_reply for row in questions)
+    assert any(row.needs_reply for row in statements)
+    assert len({row.state for row in rows}) == len(rows)
+
+
+def test_checkpoint_roundtrip_is_weights_only(tmp_path):
+    from buka_rs.train import load_checkpoint, save_checkpoint
+
+    model = OneModel(tiny())
+    path = tmp_path / "one.pt"
+    save_checkpoint(path, model, {"topic": 1.3, "urgency": 0.7}, seq_len=32)
+    loaded, temps, seq_len = load_checkpoint(path, torch.device("cpu"))
+    assert seq_len == 32
+    assert temps["urgency"] == 0.7
+    assert loaded.num_parameters() == model.num_parameters()
+
+
+def test_serve_refuses_open_bind():
+    from scripts.serve import ensure_bind
+
+    ensure_bind("127.0.0.1", allow_network=False)
+    try:
+        ensure_bind("0.0.0.0", allow_network=False)
+        raise AssertionError("open bind should fail")
+    except SystemExit:
+        pass
+    ensure_bind("0.0.0.0", allow_network=True)
 
 
 def test_bool_and_bom(tmp_path):

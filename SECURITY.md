@@ -11,4 +11,4 @@ This repository is a public course. Never commit:
 
 Discord exports include other people's messages. Do not publish those exports or models trained on them without a real legal review and consent.
 
-The default train path is `data/samples/demo_decisions.jsonl`. `scripts/serve` binds to `127.0.0.1`.
+The default train path is `data/samples/demo_decisions.jsonl`. `scripts/serve` binds to `127.0.0.1` unless you pass `--allow-network`. Checkpoints load with `weights_only=True` (tensors and plain config, not pickle code). A private checkpoint is still an extraction oracle if you expose the port.

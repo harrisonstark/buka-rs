@@ -35,7 +35,7 @@ By the end you can:
 ## Capstone
 
 ```powershell
-python -m scripts.train --config configs/tiny.yaml
+python -m scripts.train --config configs/tiny.yaml --calibrate
 python -m scripts.serve --checkpoint checkpoints/buka_latest.pt
 ```
 

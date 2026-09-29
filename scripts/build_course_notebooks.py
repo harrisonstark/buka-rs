@@ -299,7 +299,7 @@ from torch import Tensor
 def rms_norm(x: Tensor, weight: Tensor, eps: float = 1e-6) -> Tensor:
     mean_square = x.float().pow(2).mean(dim=-1, keepdim=True)
     inv = torch.rsqrt(mean_square + eps)
-    return x.float() * inv * weight.float()
+    return (x.float() * inv * weight.float()).to(dtype=x.dtype)
 
 def swiglu(gate: Tensor, up: Tensor) -> Tensor:
     return F.silu(gate) * up
@@ -311,6 +311,7 @@ assert abs(float(y[0, 0]) - 3 * inv) < 1e-4
 hidden = swiglu(torch.tensor([0.0, 1.0]), torch.tensor([2.0, 3.0]))
 assert abs(float(hidden[0])) < 1e-5
 assert float(hidden[1]) > 2.0
+assert y.dtype == torch.tensor([[3.0, 4.0]]).dtype
 print(float(y[0, 0]), float(hidden[1]))
 ''',
     )
@@ -381,6 +382,8 @@ from torch import Tensor
 
 def _confidence(probs: Tensor) -> float:
     k = probs.numel()
+    if k < 2:
+        return 1.0
     entropy = -(probs.clamp_min(1e-8) * probs.clamp_min(1e-8).log()).sum()
     return float((1.0 - entropy / math.log(k)).clamp(0.0, 1.0))
 
@@ -395,7 +398,7 @@ def choice_answer(logits: Tensor, names: list[str], temperature: float = 1.0) ->
 
 def score_answer(logits: Tensor, legend: list[str], temperature: float = 1.0) -> dict:
     probs = torch.softmax(logits.float() / max(temperature, 1e-3), dim=-1)
-    levels = torch.arange(probs.numel(), dtype=probs.dtype)
+    levels = torch.arange(probs.numel(), device=probs.device, dtype=probs.dtype)
     return {
         "score": float((probs * levels).sum()),
         "probabilities": {str(i): float(probs[i]) for i in range(probs.numel())},
@@ -442,17 +445,35 @@ def parse_example(raw: dict) -> dict | None:
     raise NotImplementedError("parse_example")
 ''',
         '''def parse_example(raw: dict) -> dict | None:
+    if raw.get("state") is None:
+        return None
     state = " ".join(str(raw.get("state", "")).split())
     if not state:
         return None
+    lower = state.lower()
+    if (lower.startswith("http://") or lower.startswith("https://")) and " " not in state:
+        return None
     flag = raw["needs_reply"]
     if isinstance(flag, str):
-        flag = flag.strip().lower() in {"true", "1", "yes"}
+        lowered = flag.strip().lower()
+        if lowered in {"true", "1", "yes"}:
+            flag = True
+        elif lowered in {"false", "0", "no"}:
+            flag = False
+        else:
+            raise ValueError(f"needs_reply must be a bool, got {flag!r}")
+    elif not isinstance(flag, bool):
+        raise ValueError(f"needs_reply must be a bool, got {flag!r}")
+    urgency = raw["urgency"]
+    if isinstance(urgency, bool) or isinstance(urgency, float):
+        raise ValueError(f"urgency must be an int, got {urgency!r}")
+    if not isinstance(urgency, int):
+        raise ValueError(f"urgency must be an int, got {urgency!r}")
     return {
         "state": state,
         "topic": str(raw["topic"]),
-        "urgency": int(raw["urgency"]),
-        "needs_reply": bool(flag),
+        "urgency": urgency,
+        "needs_reply": flag,
     }
 ''',
         '''row = parse_example({
@@ -465,6 +486,12 @@ assert row["topic"] == "ops" and row["urgency"] == 2 and row["needs_reply"] is T
 assert parse_example({"state": "  ", "topic": "chat", "urgency": 0, "needs_reply": False}) is None
 no = parse_example({"state": "hey", "topic": "chat", "urgency": 0, "needs_reply": "false"})
 assert no["needs_reply"] is False
+assert parse_example({"state": None, "topic": "chat", "urgency": 0, "needs_reply": False}) is None
+try:
+    parse_example({"state": "hey", "topic": "chat", "urgency": 1.9, "needs_reply": False})
+    raise SystemExit("1.9 should fail")
+except ValueError:
+    pass
 print(row)
 ''',
     )
@@ -507,6 +534,7 @@ def train_step(model, batch: dict[str, Tensor], optimizer: torch.optim.Optimizer
         + F.binary_cross_entropy_with_logits(out.reply, batch["reply"])
     )
     loss.backward()
+    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
     optimizer.step()
     return float(loss.detach())
 ''',
@@ -553,7 +581,9 @@ import torch.nn.functional as F
 from torch import Tensor
 
 def fit_temperature(logits: Tensor, labels: Tensor, grid: list[float] | None = None) -> float:
-    candidates = grid or [0.5, 1.0, 2.0]
+    if logits.numel() == 0:
+        return 1.0
+    candidates = grid or [0.5, 0.7, 1.0, 1.3, 1.7, 2.2, 3.0]
     best_t, best_nll = 1.0, float("inf")
     for temperature in candidates:
         nll = float(F.cross_entropy(logits.float() / temperature, labels).item())
@@ -561,10 +591,11 @@ def fit_temperature(logits: Tensor, labels: Tensor, grid: list[float] | None = N
             best_t, best_nll = float(temperature), nll
     return best_t
 ''',
-        '''logits = torch.tensor([[5.0, 0.0], [0.1, 0.1]])
-labels = torch.tensor([0, 1])
+        '''logits = torch.tensor([[8.0, 0.0], [0.3, 0.0]])
+labels = torch.tensor([1, 0])
 chosen = fit_temperature(logits, labels, grid=[0.5, 1.0, 2.0])
-assert chosen == 0.5
+assert chosen == 2.0
+assert fit_temperature(torch.empty(0, 2), torch.empty(0, dtype=torch.long)) == 1.0
 print("T", chosen)
 ''',
     )
@@ -577,7 +608,7 @@ Wire the three answers into the payload the page expects, then train and open it
 The sample file is synthetic on purpose. After this works, point `--data` at a **local** JSONL of the same schema (a labeled slice of your chats). Do not commit that file.
 
 ```powershell
-python -m scripts.train --config configs/tiny.yaml
+python -m scripts.train --config configs/tiny.yaml --calibrate
 python -m scripts.serve --checkpoint checkpoints/buka_latest.pt
 ```
 

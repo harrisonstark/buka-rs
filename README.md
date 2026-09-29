@@ -67,7 +67,7 @@ Details: [docs/model_size.md](docs/model_size.md).
 
 - **Python** 3.11+
 - **PyTorch** (install separately; CUDA 11.8 wheels for a Pascal GPU)
-- Package deps from `pyproject.toml`: `numpy`, `pyyaml`, `fastapi`, `uvicorn`, `jupyter`, `pydantic`
+- Package deps from `pyproject.toml`: `pyyaml`, `fastapi`, `uvicorn`, `jupyter`, `pydantic`
 - Dev extras: `pytest`, `ruff`
 
 ---
@@ -82,7 +82,7 @@ pip install -e ".[dev]"
 python -m scripts.smoke_gpu
 pytest
 
-python -m scripts.train --config configs/tiny.yaml
+python -m scripts.train --config configs/tiny.yaml --calibrate
 python -m scripts.serve --checkpoint checkpoints/buka_latest.pt
 # → http://127.0.0.1:7860
 ```

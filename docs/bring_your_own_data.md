@@ -7,7 +7,7 @@ The notebooks and the default train command use `data/samples/demo_decisions.jso
 One JSON object per line:
 
 ```json
-{"state": "server is down, can you look tonight?", "topic": "ops", "urgency": 2, "needs_reply": true}
+{"state": "pager is open, confirm you are taking it", "topic": "ops", "urgency": 2, "needs_reply": true}
 ```
 
 | Field | Values |
@@ -20,7 +20,7 @@ One JSON object per line:
 Put the file under `data/processed/` (gitignored) and train:
 
 ```powershell
-python -m scripts.train --data data\processed\my_decisions.jsonl --preset tiny --steps 800
+python -m scripts.train --data data\processed\my_decisions.jsonl --preset tiny --steps 800 --calibrate
 ```
 
 ## From a Discord export

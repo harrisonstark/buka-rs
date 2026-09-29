@@ -10,7 +10,7 @@ AdamW in float32 is about 16 bytes per parameter (weight, gradient, first moment
 
 A local monologue export of the Luka chats is on the order of **3 MB** of text, a few million bytes. Chat-pair JSONL next to it is smaller. That is the corpus. Chinchilla-style language-model sizing would say "a tiny net, many epochs." This course is not a language model. It is a classifier with a Transformer body, so the relevant count is **labeled states**, not raw bytes.
 
-The committed sample is about a hundred labeled lines, many of them repeats, so the tiny preset can memorize the rubric. Your own export becomes useful when you label states in the same schema (`state`, `topic`, `urgency`, `needs_reply`). A few thousand careful labels is a real training set for `tiny`. Tens of thousands is when `small` starts to earn its width. `stretch` is there so you can see a wider encoder still fit; it will not invent Jev-level judgment from a chat log.
+The committed sample is a few dozen unique labeled lines. `needs_reply` is not "does the line contain a question mark": some questions are status updates, and some statements still need an answer. Topic and urgency are not a single keyword either. Tiny can still memorize a file this small. Your own export becomes useful when you label states in the same schema (`state`, `topic`, `urgency`, `needs_reply`). A few thousand careful labels is a real training set for `tiny`. Tens of thousands is when `small` starts to earn its width. `stretch` is there so you can see a wider encoder still fit; it will not invent Jev-level judgment from a chat log.
 
 ## Presets
 
