@@ -1,0 +1,38 @@
+# Python
+.venv/
+venv/
+.env
+.env.*
+.tmp/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Data and weights
+data/raw/
+data/processed/
+checkpoints/
+_private/
+package/
+packageL/
+discord_export/
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.gguf
+
+# Rust leftover / OS
+/target/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

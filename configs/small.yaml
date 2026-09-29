@@ -1,0 +1,6 @@
+preset: small
+data: data/samples/demo_decisions.jsonl
+steps: 600
+batch: 16
+seq: 192
+lr: 0.0008

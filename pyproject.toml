@@ -1,0 +1,35 @@
+[project]
+name = "buka-rs"
+version = "0.1.0"
+description = "Small System One model from scratch — calibrated decisions, not generated text"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy",
+  "pyyaml",
+  "fastapi",
+  "uvicorn[standard]",
+  "jupyter",
+  "pydantic>=2",
+]
+
+# Install PyTorch separately (CUDA 11.8 wheels for a GTX 1080):
+#   pip install torch --index-url https://download.pytorch.org/whl/cu118
+# Or run: .\scripts\setup_venv.ps1
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "ruff",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["buka_rs*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib"

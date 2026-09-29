@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>buka-rs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f7f6f3;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #ddd9d0;
+      --accent: #2d5a4a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      min-height: 100vh;
+    }
+    header, main { max-width: 42rem; margin: 0 auto; padding: 1rem 1.25rem; }
+    header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+      text-transform: lowercase;
+      color: var(--accent);
+    }
+    header p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.85rem; }
+    textarea {
+      width: 100%;
+      min-height: 6rem;
+      font: inherit;
+      padding: 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 0.4rem;
+      background: var(--surface);
+    }
+    button {
+      margin-top: 0.6rem;
+      padding: 0.55rem 1rem;
+      background: var(--accent);
+      color: white;
+      border: 0;
+      border-radius: 0.4rem;
+      font: inherit;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.5; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.8rem 0.9rem;
+      margin-top: 0.75rem;
+    }
+    .card h2 {
+      margin: 0;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .card .value { margin: 0.35rem 0 0; font-size: 1.15rem; }
+    .bar { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.35rem; font-size: 0.8rem; }
+    .track { flex: 1; height: 0.45rem; background: #eee; border-radius: 99px; }
+    .fill { height: 100%; background: var(--accent); border-radius: 99px; }
+    #status { color: var(--muted); font-size: 0.8rem; margin-top: 0.6rem; }
+    .error { color: #a33; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>buka-rs</h1>
+    <p>a state in, three decisions out</p>
+  </header>
+  <main>
+    <textarea id="state" placeholder="paste a message…">server is down, can you look tonight?</textarea>
+    <button id="go" type="button">decide</button>
+    <div id="status"></div>
+    <div id="out"></div>
+  </main>
+  <script>
+    const statusEl = document.getElementById("status");
+    const out = document.getElementById("out");
+
+    function bars(pairs) {
+      return pairs.map(([name, p]) => {
+        const pct = Math.max(0, Math.min(100, p * 100));
+        return '<div class="bar"><span style="width:6.5rem">' + name +
+          '</span><div class="track"><div class="fill" style="width:' + pct.toFixed(1) +
+          '%"></div></div><span>' + p.toFixed(2) + "</span></div>";
+      }).join("");
+    }
+
+    function card(title, value, body) {
+      return '<section class="card"><h2>' + title + '</h2><p class="value">' +
+        value + "</p>" + body + "</section>";
+    }
+
+    async function health() {
+      try {
+        const res = await fetch("/health");
+        const body = await res.json();
+        statusEl.textContent = "ready · " + body.params_m + "M · " + body.device + " · " + body.dtype;
+      } catch (err) {
+        statusEl.textContent = "server not reachable. Run python -m scripts.serve";
+        statusEl.className = "error";
+      }
+    }
+
+    document.getElementById("go").addEventListener("click", async () => {
+      const button = document.getElementById("go");
+      button.disabled = true;
+      try {
+        const res = await fetch("/decide", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state: document.getElementById("state").value }),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        statusEl.className = "";
+        statusEl.textContent = "";
+        const data = await res.json();
+        const topic = data.answers.topic;
+        const urgency = data.answers.urgency;
+        const reply = data.answers.needs_reply;
+        const topicBars = bars(Object.entries(topic.probabilities));
+        const levelBars = bars(urgency.legend.map((name, i) => [name, urgency.probabilities[String(i)]]));
+        out.innerHTML =
+          card("choice · topic", topic.choice + " · confidence " + topic.confidence.toFixed(2), topicBars) +
+          card("score · urgency", urgency.score.toFixed(2), levelBars) +
+          card("noul · needs a reply", reply.noul.toFixed(2), "");
+      } catch (err) {
+        statusEl.textContent = err.message;
+        statusEl.className = "error";
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    health();
+  </script>
+</body>
+</html>
